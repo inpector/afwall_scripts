@@ -50,8 +50,12 @@ $IPTABLES -A INPUT -i lo -j ACCEPT
 $IPTABLES -A "afwall" -o lo -j ACCEPT
 
 # Set a specific DNS-Server (dismail.de AdBlocking DNS-Server) for all networks except home WiFi (10.42.20.0/24)
-$IPTABLES -t nat -I OUTPUT ! -s 10.42.20.0/24 -p tcp --dport 53 -j DNAT --to-destination 80.241.218.68:53
-$IPTABLES -t nat -I OUTPUT ! -s 10.42.20.0/24 -p udp --dport 53 -j DNAT --to-destination 80.241.218.68:53
+$IPTABLES -t nat -I OUTPUT ! -s 10.42.20.0/24 -p tcp --dport 853 -j DNAT --to-destination 80.241.218.68:853
+$IPTABLES -t nat -I OUTPUT ! -s 10.42.20.0/24 -p udp --dport 853 -j DNAT --to-destination 80.241.218.68:853
+
+#ensure that every dns request goes over TLS
+$IPTABLES -t nat -I OUTPUT ! -s 10.42.20.0/24 -p tcp --dport 53 -j DNAT --to-destination 80.241.218.68:853
+$IPTABLES -t nat -I OUTPUT ! -s 10.42.20.0/24 -p udp --dport 53 -j DNAT --to-destination 80.241.218.68:853
 
 # Force a specific NTP (ntp0.fau.de), Location: University Erlangen-Nuernberg
 $IPTABLES -t nat -A OUTPUT -p tcp --dport 123 -j DNAT --to-destination 131.188.3.222:123
